@@ -139,7 +139,7 @@ trait JvmInstances {
 
   private[testing] def stacLayerGen: Gen[StacLayer] = (
     nonEmptyAlphaRefinedStringGen,
-    TestInstances.bboxGen,
+    TestInstances.twoDimBboxGen,
     rectangleGen,
     TestInstances.stacLayerPropertiesGen,
     Gen.listOfN(8, TestInstances.stacLinkGen),

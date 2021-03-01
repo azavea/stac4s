@@ -121,7 +121,7 @@ trait JsInstances {
 
   private[testing] def stacLayerGen: Gen[StacLayer] = (
     nonEmptyAlphaRefinedStringGen,
-    TestInstances.bboxGen,
+    TestInstances.twoDimBboxGen,
     geometryGen,
     TestInstances.stacLayerPropertiesGen,
     Gen.listOfN(8, TestInstances.stacLinkGen),

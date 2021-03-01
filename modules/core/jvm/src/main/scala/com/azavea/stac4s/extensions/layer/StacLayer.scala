@@ -1,7 +1,7 @@
 package com.azavea.stac4s.extensions.layer
 
 import com.azavea.stac4s.meta._
-import com.azavea.stac4s.{Bbox, StacLink}
+import com.azavea.stac4s.{StacLink, TwoDimBbox}
 
 import cats.kernel.Eq
 import eu.timepit.refined.types.string
@@ -11,7 +11,7 @@ import io.circe.{Decoder, Encoder}
 
 final case class StacLayer(
     id: string.NonEmptyString,
-    bbox: Bbox,
+    bbox: TwoDimBbox,
     geometry: Geometry,
     properties: StacLayerProperties,
     links: List[StacLink],
