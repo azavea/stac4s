@@ -5,13 +5,13 @@ import com.azavea.stac4s.StacLink
 
 import cats.kernel.Eq
 import eu.timepit.refined.types.string
-import geotrellis.vector.Geometry
+import geotrellis.vector.{Geometry, Projected}
 import io.circe.refined._
 import io.circe.{Decoder, Encoder}
 
 final case class StacLayer(
     id: string.NonEmptyString,
-    geometry: Geometry,
+    geometry: Projected[Geometry],
     properties: StacLayerProperties,
     links: List[StacLink],
     _type: String = "Feature"
@@ -26,7 +26,7 @@ object StacLayer {
     "properties",
     "links",
     "type"
-  )(layer => (layer.id, layer.geometry, layer.properties, layer.links, layer._type))
+  )(layer => (layer.id, layer.geometry.geom, layer.properties, layer.links, layer._type))
 
   implicit val decStacLayer: Decoder[StacLayer] = Decoder.forProduct5(
     "id",
@@ -34,5 +34,16 @@ object StacLayer {
     "properties",
     "links",
     "type"
-  )(StacLayer.apply)
+  )({
+    (
+        id: string.NonEmptyString,
+        geometry: Geometry,
+        properties: StacLayerProperties,
+        links: List[StacLink],
+        _type: String
+    ) =>
+      {
+        StacLayer(id, Projected(geometry, 4326), properties, links, _type)
+      }
+  })
 }

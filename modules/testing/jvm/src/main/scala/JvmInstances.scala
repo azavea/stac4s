@@ -17,7 +17,8 @@ import com.azavea.stac4s.{
 
 import cats.syntax.apply._
 import cats.syntax.functor._
-import geotrellis.vector.{Geometry, Point, Polygon}
+import geotrellis.proj4.{LatLng, WebMercator}
+import geotrellis.vector.{Geometry, Point, Polygon, Projected}
 import io.circe.JsonObject
 import io.circe.syntax._
 import org.scalacheck.Arbitrary.arbitrary
@@ -48,6 +49,9 @@ trait JvmInstances {
         Point(lowerX, lowerY)
       )
     }).widen
+
+  private[testing] def rectangleGen4326: Gen[Projected[Geometry]] =
+    rectangleGen map { rect => Projected(rect, 3857).reproject(WebMercator, LatLng)(4326) }
 
   private[testing] def stacItemGen: Gen[StacItem] =
     (
@@ -139,7 +143,7 @@ trait JvmInstances {
 
   private[testing] def stacLayerGen: Gen[StacLayer] = (
     nonEmptyAlphaRefinedStringGen,
-    rectangleGen,
+    rectangleGen4326,
     TestInstances.stacLayerPropertiesGen,
     Gen.listOfN(8, TestInstances.stacLinkGen),
     Gen.const("Feature")
